@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Biography Paris Hero</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- EMBEDDABLE HERO SLIDER SECTION (Zero external libraries, fully self-contained) -->
+  <section class="biography-hero-slider" id="biographyHeroSlider" aria-label="Biography Paris Perfume Collection">
+    
+    <!-- Ambient Studio Spotlight Atmosphere -->
+    <div class="ambient-spotlight" id="ambientSpotlight"></div>
+
+    <!-- Luxury Section Header -->
+    <header class="showcase-header" id="showcaseHeader">
+      <h1 class="header-title">The Redefined Heritage of French Perfumery</h1>
+      <p class="header-caption">Now Available in India</p>
+    </header>
+
+    <!-- 3D Carousel Stage Viewport -->
+    <div class="carousel-stage" id="carouselStage">
+      <!-- 3D Flacons Track -->
+      <div class="flacons-track" id="flaconsTrack">
+        <!-- Rendered dynamically by script.js -->
+      </div>
+    </div>
+
+    <!-- Active Flacon Quick Details & Direct Product Page Link -->
+    <footer class="showcase-footer" id="showcaseFooter">
+      <div class="footer-navigation">
+        <button class="arrow-btn prev-btn" id="prevBtn" aria-label="Previous flacon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 19l-7-7 7-7"/></svg>
+        </button>
+
+        <div class="active-summary">
+          <a href="/shop/asmara" class="summary-link" id="summaryLink" aria-label="View product page">
+            <h2 class="summary-name" id="summaryName">ASMARA</h2>
+            <span class="summary-meta" id="summaryMeta">EXTRAIT DE PARFUM — ₹ 4,999</span>
+            <span class="summary-cta">VIEW PRODUCT <span class="cta-arrow">→</span></span>
+          </a>
+        </div>
+
+        <button class="arrow-btn next-btn" id="nextBtn" aria-label="Next flacon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <!-- Pagination Progress Dots -->
+      <div class="pagination-indicators" id="paginationIndicators">
+        <!-- Dots injected by JS -->
+      </div>
+    </footer>
+
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

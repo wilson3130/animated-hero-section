@@ -1,0 +1,479 @@
+/* ==========================================================================
+   BIOGRAPHY PARIS — HAUTE PARFUMERIE HERO SHOWCASE
+   Font pairing: Bebas Neue (Primary) + Poppins (Secondary)
+   Direct Product Navigation Engine (Zero external dependencies)
+   ========================================================================== */
+
+:root {
+  --bio-bg: #fbf9f6;
+  --bio-bg-alt: #f0eae1;
+  --bio-text-main: #424248;
+  --bio-text-muted: #524c47;
+  --bio-gold: #c5a47e;
+  --bio-gold-light: #e8d7c2;
+  --bio-gold-dark: #8c6a43;
+  --bio-border-gold: rgba(197, 164, 126, 0.3);
+  --bio-border-subtle: rgba(20, 18, 16, 0.08);
+  --bio-font-primary: 'Bebas Neue', sans-serif;
+  --bio-font-secondary: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+  --bio-ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --bio-ease-bounce: cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+/* Master Component Section */
+.biography-hero-slider {
+  position: relative;
+  width: 100%;
+  min-height: 820px;
+  background-color: var(--bio-bg);
+  background: radial-gradient(circle at 50% 32%, #ffffff 0%, var(--bio-bg) 55%, var(--bio-bg-alt) 100%);
+  color: var(--bio-text-main);
+  font-family: var(--bio-font-secondary);
+  overflow: hidden;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 3.5rem 0 2rem 0;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.biography-hero-slider *,
+.biography-hero-slider *::before,
+.biography-hero-slider *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Atmospheric Studio Glow */
+.ambient-spotlight {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 720px;
+  height: 720px;
+  background: radial-gradient(circle, rgba(235, 185, 115, 0.35) 0%, rgba(251, 249, 246, 0) 68%);
+  border-radius: 50%;
+  filter: blur(55px);
+  pointer-events: none;
+  z-index: 1;
+  transition: background 0.8s var(--bio-ease-smooth);
+}
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+.showcase-header {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 0 1.5rem 2rem;
+}
+
+.gold-dash {
+  width: 36px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--bio-gold), transparent);
+}
+
+.header-title {
+  font-family: var(--bio-font-primary);
+  font-size: 3.6rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--bio-text-main);
+  margin-bottom: 0.2rem;
+  line-height: 1.05;
+}
+
+.header-caption {
+  font-family: var(--bio-font-secondary);
+  font-size: 1.1rem;
+  letter-spacing: 0.16em;
+  color: var(--bio-text-muted);
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   CAROUSEL STAGE
+   ========================================================================== */
+.carousel-stage {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  height: 480px;
+  z-index: 5;
+  perspective: 1600px;
+  perspective-origin: 50% 65%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  cursor: grab;
+  touch-action: pan-y;
+  overflow: visible;
+}
+
+.carousel-stage:active {
+  cursor: grabbing;
+}
+
+/* The Continuous 3D Carousel Track */
+.flacons-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* ==========================================================================
+   FLACON CARD ITEM (Direct Clickable Product Link)
+   ========================================================================== */
+.flacon-card {
+  width: 280px;
+  height: 460px;
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 65px;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.flacon-link {
+  display: block;
+  text-decoration: none;
+  outline: none;
+  cursor: pointer;
+  transform-style: preserve-3d;
+}
+
+/* Bottle Figure */
+.flacon-figure {
+  position: relative;
+  width: 210px;
+  height: 395px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  transform-style: preserve-3d;
+}
+
+.flacon-photo-wrap {
+  position: relative;
+  width: 210px;
+  height: 395px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  transform-style: preserve-3d;
+  transition: transform 0.7s var(--bio-ease-smooth);
+}
+
+/* The Tightly Cropped Bottle Image */
+.flacon-img {
+  width: 210px;
+  height: 395px;
+  object-fit: contain;
+  object-position: bottom;
+  filter: drop-shadow(0 14px 20px rgba(35, 25, 15, 0.2)) drop-shadow(0 3px 6px rgba(0,0,0,0.08));
+  transition: transform 0.7s var(--bio-ease-smooth), filter 0.7s var(--bio-ease-smooth);
+  pointer-events: none;
+}
+
+/* Fixed & Refined Glass Floor Reflection (Direct contact, soft luxury fade) */
+.flacon-floor-reflection {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 210px;
+  height: 75px;
+  overflow: hidden;
+  transform: scaleY(-1);
+  transform-origin: top center;
+  opacity: 0.15;
+  filter: blur(0.8px);
+  mask-image: linear-gradient(to top, transparent 15%, rgba(0, 0, 0, 0.8) 100%);
+  -webkit-mask-image: linear-gradient(to top, transparent 15%, rgba(0, 0, 0, 0.8) 100%);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.flacon-floor-reflection img {
+  width: 210px;
+  height: 395px;
+  object-fit: contain;
+  object-position: bottom;
+}
+
+/* Ground Contact Shadow */
+.flacon-base-shadow {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 145px;
+  height: 12px;
+  background: radial-gradient(ellipse at center, rgba(20, 12, 6, 0.45) 0%, rgba(20, 12, 6, 0.12) 45%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(2px);
+  transition: transform 0.65s var(--bio-ease-smooth), opacity 0.65s var(--bio-ease-smooth);
+}
+
+/* Hover feedback on center bottle */
+.flacon-card.is-center:hover .flacon-photo-wrap {
+  transform: translateY(-8px) scale(1.03);
+}
+
+.flacon-card.is-center:hover .flacon-img {
+  filter: drop-shadow(0 22px 28px rgba(35, 25, 15, 0.25)) drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+}
+
+/* ==========================================================================
+   3D CAROUSEL ORIENTATIONS (State identification & base z-indexes)
+   Continuous transforms, dynamic tilt & scales are computed live via JS physics
+   ========================================================================== */
+.flacon-card.is-center {
+  z-index: 25;
+}
+
+.flacon-card.is-left,
+.flacon-card.is-right {
+  z-index: 10;
+}
+
+.flacon-card.is-far {
+  z-index: 2;
+}
+
+/* ==========================================================================
+   FOOTER & DIRECT PRODUCT LINK (Bebas Neue Title + Poppins Meta)
+   ========================================================================== */
+.showcase-footer {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+  padding: 0 1.5rem;
+}
+
+.footer-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.2rem;
+}
+
+.arrow-btn {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--bio-border-gold);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bio-text-main);
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+  transition: all 0.25s var(--bio-ease-smooth);
+}
+
+.arrow-btn:hover {
+  background: var(--bio-text-main);
+  color: #ffffff;
+  border-color: var(--bio-text-main);
+  transform: scale(1.08);
+}
+
+.active-summary {
+  text-align: center;
+  min-width: 240px;
+}
+
+/* Direct Product Summary Link */
+.summary-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.25s var(--bio-ease-smooth);
+}
+
+.summary-name {
+  font-family: var(--bio-font-primary);
+  font-size: 2.8rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: var(--bio-text-main);
+  line-height: 1;
+  text-transform: uppercase;
+  transition: color 0.25s ease;
+}
+
+.summary-meta {
+  display: block;
+  font-family: var(--bio-font-secondary);
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  color: var(--bio-text-muted);
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+.summary-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--bio-font-secondary);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  font-weight: 600;
+  color: var(--bio-gold-dark);
+  margin-top: 8px;
+  text-transform: uppercase;
+  position: relative;
+  transition: color 0.25s ease;
+}
+
+.summary-cta::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--bio-gold);
+  transform: scaleX(0.7);
+  transition: transform 0.25s var(--bio-ease-smooth);
+}
+
+.summary-link:hover .summary-name {
+  color: var(--bio-gold-dark);
+}
+
+.summary-link:hover .summary-cta::after {
+  transform: scaleX(1);
+}
+
+.summary-link:hover .cta-arrow {
+  transform: translateX(4px);
+}
+
+.cta-arrow {
+  font-size: 0.85rem;
+  transition: transform 0.25s ease;
+}
+
+/* Pagination Indicators */
+.pagination-indicators {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.indicator-pill {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: rgba(20, 18, 16, 0.2);
+  transition: all 0.4s var(--bio-ease-bounce);
+  cursor: pointer;
+}
+
+.indicator-pill.active {
+  width: 26px;
+  border-radius: 10px;
+  background-color: var(--bio-text-main);
+}
+
+/* ==========================================================================
+   MOBILE & TABLET RESPONSIVE PERFECTION
+   ========================================================================== */
+@media (max-width: 768px) {
+  .biography-hero-slider {
+    min-height: 740px;
+    padding: 2.2rem 0 1.5rem 0;
+  }
+  
+  .showcase-header {
+    padding: 0 1.5rem;
+  }
+
+  .header-title {
+    font-size: 2.6rem;
+    letter-spacing: 0.02em;
+  }
+
+  .header-caption {
+    font-size: 1.1rem;
+    letter-spacing: 0.08em;
+  }
+
+  .carousel-stage {
+    height: 440px;
+    max-width: 100%;
+  }
+
+  .flacon-card {
+    width: 210px;
+    height: 420px;
+    padding-bottom: 60px;
+  }
+
+  .flacon-figure,
+  .flacon-photo-wrap {
+    width: 165px;
+    height: 300px;
+  }
+
+  .flacon-img {
+    width: 165px;
+    height: 300px;
+  }
+
+  .flacon-floor-reflection {
+    width: 165px;
+    height: 60px;
+  }
+
+  .flacon-floor-reflection img {
+    width: 165px;
+    height: 300px;
+  }
+
+  .flacon-base-shadow {
+    width: 120px;
+    height: 10px;
+    bottom: -4px;
+  }
+
+  .footer-navigation {
+    gap: 1.2rem;
+  }
+
+  .summary-name {
+    font-size: 2.3rem;
+  }
+}
