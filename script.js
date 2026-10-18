@@ -14,7 +14,7 @@
       id: 'asmara',
       name: 'Asmara',
       concentration: 'EXTRAIT DE PARFUM',
-      price: '₹ 4,999',
+      price: '₹ 698',
       image: 'assets/asmara-tight.png',
       url: '/shop/asmara',
       glow: 'rgba(235, 175, 100, 0.45)'
@@ -23,7 +23,7 @@
       id: 'miami-blues',
       name: 'Miami Blues',
       concentration: 'EXTRAIT DE PARFUM',
-      price: '₹ 4,499',
+      price: '₹ 698',
       image: 'assets/miami-blues-tight.png',
       url: '/shop/miami-blues',
       glow: 'rgba(140, 200, 220, 0.45)'
@@ -32,7 +32,7 @@
       id: 'the-diplomat',
       name: 'The Diplomat',
       concentration: 'EXTRAIT DE PARFUM',
-      price: '₹ 4,999',
+      price: '₹ 698',
       image: 'assets/the-diplomat-tight.png',
       url: '/shop/the-diplomat',
       glow: 'rgba(215, 190, 140, 0.42)'
@@ -41,7 +41,7 @@
       id: 'the-gambler',
       name: 'The Gambler',
       concentration: 'EXTRAIT DE PARFUM',
-      price: '₹ 4,499',
+      price: '₹ 698',
       image: 'assets/the-gambler-tight.png',
       url: '/shop/the-gambler',
       glow: 'rgba(220, 155, 130, 0.42)'
