@@ -342,7 +342,7 @@
     updateDimensions() {
       this.stageWidth = this.stage.clientWidth || window.innerWidth;
       const isMobile = window.innerWidth <= 768;
-      this.cardWidth = isMobile ? 210 : 280;
+      this.cardWidth = isMobile ? 190 : 280;
       this.centerOffset = (this.stageWidth - this.cardWidth) / 2;
       this.tickInterval = this.cardWidth / 3.2; // fine gear teeth interval
     }
@@ -558,12 +558,12 @@
       const stageCenter = this.stageWidth / 2;
       const isMobile = window.innerWidth <= 768;
 
-      // Mobile dimensions & spacing remain strictly untouched
-      const maxScale = isMobile ? 1.18 : 1.10;
+      // Desktop parameters remain 100% untouched; Mobile calibrated for compact vertical layout
+      const maxScale = isMobile ? 1.15 : 1.10;
       const minScale = isMobile ? 0.80 : 0.82;
       const maxRotY = isMobile ? 18 : 22;
-      const maxZ = isMobile ? 38 : 50;
-      const maxConv = isMobile ? 16 : 0;
+      const maxZ = isMobile ? 32 : 50;
+      const maxConv = isMobile ? 14 : 0;
 
       cards.forEach((card, idx) => {
         const cardCenter = currentTranslate + (idx * this.cardWidth) + (this.cardWidth / 2);
