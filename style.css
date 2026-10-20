@@ -473,82 +473,109 @@
 }
 
 /* ==========================================================================
-   MOBILE & TABLET RESPONSIVE PERFECTION
+   MOBILE & TABLET RESPONSIVE PERFECTION (Compact Vertical Layout Experiment)
    ========================================================================== */
 @media (max-width: 768px) {
   .biography-hero-slider {
-    min-height: 740px;
+    min-height: 590px;
+    padding: 1.8rem 0 1rem 0;
   }
   
   .showcase-header {
-    padding: 0 1.5rem;
+    padding: 0 1.2rem;
   }
 
   .header-title {
-    font-size: 2rem;
+    font-size: 1.85rem;
     letter-spacing: 0.02em;
+    margin-bottom: 0.15rem;
   }
 
   .header-caption {
-    font-size: 1rem;
+    font-size: 0.88rem;
     letter-spacing: 0em;
   }
 
   .swipe-indicator-pill {
-    margin: 0.65rem auto 0;
-    padding: 3.5px 11px;
-    gap: 6px;
+    margin: 0.45rem auto 0;
+    padding: 3px 10px;
+    gap: 5px;
   }
 
   .swipe-pill-label {
-    font-size: 0.6rem;
+    font-size: 0.58rem;
     letter-spacing: 0.16em;
   }
 
   .carousel-stage {
-    height: 440px;
+    height: 335px;
     max-width: 100%;
   }
 
   .flacon-card {
-    width: 210px;
-    height: 420px;
-    padding-bottom: 60px;
+    width: 190px;
+    height: 330px;
+    padding-bottom: 45px;
   }
 
   .flacon-figure,
   .flacon-photo-wrap {
-    width: 165px;
-    height: 300px;
+    width: 145px;
+    height: 260px;
   }
 
   .flacon-img {
-    width: 165px;
-    height: 300px;
+    width: 145px;
+    height: 260px;
   }
 
   .flacon-floor-reflection {
-    width: 165px;
-    height: 60px;
+    width: 145px;
+    height: 48px;
   }
 
   .flacon-floor-reflection img {
-    width: 165px;
-    height: 300px;
+    width: 145px;
+    height: 260px;
   }
 
   .flacon-base-shadow {
-    width: 120px;
-    height: 10px;
-    bottom: -4px;
+    width: 105px;
+    height: 8px;
+    bottom: -3px;
+  }
+
+  .showcase-footer {
+    gap: 0.8rem;
+    padding: 0 1rem;
   }
 
   .footer-navigation {
-    gap: 1.2rem;
+    gap: 1.1rem;
+  }
+
+  .arrow-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .arrow-btn svg {
+    width: 18px;
+    height: 18px;
   }
 
   .summary-name {
-    font-size: 2rem;
+    font-size: 1.85rem;
     letter-spacing: 0.02em;
+  }
+
+  .summary-meta {
+    font-size: 0.7rem;
+    margin-top: 2px;
+  }
+
+  .summary-cta {
+    font-size: 0.68rem;
+    margin-top: 5px;
   }
 }
