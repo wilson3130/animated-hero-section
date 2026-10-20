@@ -8,43 +8,75 @@
 (function () {
   'use strict';
 
+  // Automatically determine base asset URL from the script source (handles GitHub CDN, jsDelivr, or local)
+  const currentScript = document.currentScript;
+  const SCRIPT_BASE_URL = currentScript && currentScript.src && currentScript.src.includes('/')
+    ? currentScript.src.substring(0, currentScript.src.lastIndexOf('/') + 1)
+    : '';
+
+  function resolveAssetUrl(path) {
+    if (!path) return '';
+    if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('//')) {
+      return path;
+    }
+    return SCRIPT_BASE_URL + path;
+  }
+
   // Configurable perfume data with direct product URLs
   const PERFUMES_DATA = [
-    {
-      id: 'asmara',
-      name: 'Asmara',
-      concentration: 'EXTRAIT DE PARFUM',
-      price: '₹ 4,999',
-      image: 'assets/asmara-tight.png',
-      url: '/shop/asmara',
-      glow: 'rgba(235, 175, 100, 0.45)'
-    },
     {
       id: 'miami-blues',
       name: 'Miami Blues',
       concentration: 'EXTRAIT DE PARFUM',
-      price: '₹ 4,499',
-      image: 'assets/miami-blues-tight.png',
-      url: '/shop/miami-blues',
+      price: '₹698',
+      image: 'assets/miami-blues-tight.webp',
+      url: '/shop/miami-blues-21',
       glow: 'rgba(140, 200, 220, 0.45)'
+    },
+    {
+      id: 'amiriyat',
+      name: 'Amiriyat',
+      concentration: 'EXTRAIT DE PARFUM',
+      price: '₹698',
+      image: 'assets/amiriyat-tight.webp',
+      url: '/shop/amiriyat-32',
+      glow: 'rgba(220, 176, 140, 0.45)'
+    },
+    {
+      id: 'asmara',
+      name: 'Asmara',
+      concentration: 'EXTRAIT DE PARFUM',
+      price: '₹698',
+      image: 'assets/asmara-tight.webp',
+      url: '/shop/asmara-33',
+      glow: 'rgba(235, 175, 100, 0.45)'
     },
     {
       id: 'the-diplomat',
       name: 'The Diplomat',
       concentration: 'EXTRAIT DE PARFUM',
-      price: '₹ 4,999',
-      image: 'assets/the-diplomat-tight.png',
-      url: '/shop/the-diplomat',
+      price: '₹698',
+      image: 'assets/the-diplomat-tight.webp',
+      url: '/shop/the-diplomat-20',
       glow: 'rgba(215, 190, 140, 0.42)'
     },
     {
       id: 'the-gambler',
       name: 'The Gambler',
       concentration: 'EXTRAIT DE PARFUM',
-      price: '₹ 4,499',
-      image: 'assets/the-gambler-tight.png',
-      url: '/shop/the-gambler',
+      price: '₹698',
+      image: 'assets/the-gambler-tight.webp',
+      url: '/shop/the-gambler-22',
       glow: 'rgba(220, 155, 130, 0.42)'
+    },
+    {
+      id: 'Vanilatté',
+      name: 'Vanilatté',
+      concentration: 'EXTRAIT DE PARFUM',
+      price: '₹698',
+      image: 'assets/vanilatte-tight.webp',
+      url: '/shop/vanilatte-25',
+      glow: 'rgba(128, 91, 66, 0.42)'
     }
   ];
 
@@ -259,14 +291,15 @@
           card.className = 'flacon-card';
           card.dataset.index = globalIdx;
           card.dataset.dataIndex = dataIdx;
+          const imgUrl = resolveAssetUrl(item.image);
 
           card.innerHTML = `
             <a href="${item.url}" class="flacon-link" aria-label="Explore ${item.name}">
               <div class="flacon-figure">
                 <div class="flacon-photo-wrap">
-                  <img src="${item.image}" alt="${item.name} Flacon" class="flacon-img" loading="eager" />
+                  <img src="${imgUrl}" alt="${item.name} Flacon" class="flacon-img" loading="eager" />
                   <div class="flacon-floor-reflection">
-                    <img src="${item.image}" alt="" aria-hidden="true" />
+                    <img src="${imgUrl}" alt="" aria-hidden="true" />
                   </div>
                 </div>
                 <div class="flacon-base-shadow"></div>
