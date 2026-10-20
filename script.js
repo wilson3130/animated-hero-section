@@ -25,15 +25,6 @@
   // Configurable perfume data with direct product URLs
   const PERFUMES_DATA = [
     {
-      id: 'miami-blues',
-      name: 'Miami Blues',
-      concentration: 'EXTRAIT DE PARFUM',
-      price: '₹698',
-      image: 'assets/miami-blues-tight.webp',
-      url: '/shop/miami-blues-21',
-      glow: 'rgba(140, 200, 220, 0.45)'
-    },
-    {
       id: 'amiriyat',
       name: 'Amiriyat',
       concentration: 'EXTRAIT DE PARFUM',
@@ -41,6 +32,15 @@
       image: 'assets/amiriyat-tight.webp',
       url: '/shop/amiriyat-32',
       glow: 'rgba(220, 176, 140, 0.45)'
+    },
+    {
+      id: 'miami-blues',
+      name: 'Miami Blues',
+      concentration: 'EXTRAIT DE PARFUM',
+      price: '₹698',
+      image: 'assets/miami-blues-tight.webp',
+      url: '/shop/miami-blues-21',
+      glow: 'rgba(140, 200, 220, 0.45)'
     },
     {
       id: 'asmara',
