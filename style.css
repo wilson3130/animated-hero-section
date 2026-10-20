@@ -99,6 +99,70 @@
   text-transform: uppercase;
 }
 
+/* Minimal Swipe Indicator Pill */
+.swipe-indicator-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0.9rem auto 0;
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--bio-border-gold);
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(20, 18, 16, 0.04);
+  pointer-events: none;
+  user-select: none;
+}
+
+.swipe-pill-label {
+  font-family: var(--bio-font-secondary);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: var(--bio-text-muted);
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.swipe-arrow-icon {
+  color: var(--bio-gold-dark);
+  display: block;
+  flex-shrink: 0;
+}
+
+.swipe-arrow-icon.arrow-left {
+  animation: swipeNudgeLeft 2s ease-in-out infinite;
+}
+
+.swipe-arrow-icon.arrow-right {
+  animation: swipeNudgeRight 2s ease-in-out infinite;
+}
+
+@keyframes swipeNudgeLeft {
+  0%, 100% {
+    transform: translateX(0);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateX(-3px);
+    opacity: 1;
+  }
+}
+
+@keyframes swipeNudgeRight {
+  0%, 100% {
+    transform: translateX(0);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateX(3px);
+    opacity: 1;
+  }
+}
+
 /* ==========================================================================
    CAROUSEL STAGE
    ========================================================================== */
@@ -428,6 +492,17 @@
   .header-caption {
     font-size: 1rem;
     letter-spacing: 0em;
+  }
+
+  .swipe-indicator-pill {
+    margin: 0.65rem auto 0;
+    padding: 3.5px 11px;
+    gap: 6px;
+  }
+
+  .swipe-pill-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
   }
 
   .carousel-stage {
