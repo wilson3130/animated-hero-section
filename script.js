@@ -793,14 +793,31 @@
       const srcW = img.naturalWidth || 720;
       const srcH = img.naturalHeight || 1280;
 
-      // Contain fit with centered positioning
-      const scale = Math.min(cw / srcW, ch / srcH);
+      // Portrait (Mobile): Cover fill — video & flacon fill 100% of the screen with zero borders
+      // Landscape (Desktop): Fill 100% of screen height and blend studio gradient across widescreen
+      const isPortrait = cw < ch;
+      const scale = isPortrait
+        ? Math.max(cw / srcW, ch / srcH)
+        : (ch / srcH);
+
       const dw = srcW * scale;
       const dh = srcH * scale;
       const dx = (cw - dw) / 2;
       const dy = (ch - dh) / 2;
 
-      this.ctx.clearRect(0, 0, cw, ch);
+      if (dx > 0 || dy > 0) {
+        const bgGrad = this.ctx.createLinearGradient(0, 0, 0, ch);
+        bgGrad.addColorStop(0, '#e9ebe8');
+        bgGrad.addColorStop(0.15, '#e6e8e5');
+        bgGrad.addColorStop(0.5, '#e5e5e5');
+        bgGrad.addColorStop(0.8, '#e4e4e4');
+        bgGrad.addColorStop(1, '#dfdfdf');
+        this.ctx.fillStyle = bgGrad;
+        this.ctx.fillRect(0, 0, cw, ch);
+      } else {
+        this.ctx.clearRect(0, 0, cw, ch);
+      }
+
       this.ctx.imageSmoothingEnabled = true;
       this.ctx.imageSmoothingQuality = 'high';
       this.ctx.drawImage(img, 0, 0, srcW, srcH, dx, dy, dw, dh);

@@ -626,35 +626,25 @@
   background: inherit;
 }
 
-/* Canvas Viewport */
+/* Canvas Viewport — 100% Full-Bleed Frame Filling */
 .exploded-canvas-wrap {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  inset: 0;
   width: 100%;
   height: 100%;
-  max-height: 88vh;
-  max-height: 88dvh;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2;
   pointer-events: none;
+  overflow: hidden;
 }
 
 .exploded-canvas {
-  width: auto;
+  width: 100%;
   height: 100%;
-  max-width: 100%;
-  max-height: 100%;
-  aspect-ratio: 9 / 16;
   display: block;
-  object-fit: contain;
-  filter: none; /* No box-shadow for full-bleed seamless blend */
-  /* Seamless edge feathering: blends canvas borders smoothly into the studio background */
-  -webkit-mask-image: radial-gradient(ellipse 94% 94% at 50% 50%, #000 82%, transparent 100%);
-  mask-image: radial-gradient(ellipse 94% 94% at 50% 50%, #000 82%, transparent 100%);
+  filter: none;
 }
 
 /* Desktop Callouts Overlay */
@@ -990,42 +980,38 @@
 
 /* ==========================================================================
    MOBILE RESPONSIVE BEHAVIOR (<= 820px)
-   Immersive, spacious vertical presentation with floating interactive beacons
+   Full-screen immersive presentation — zero empty borders, clean view
    ========================================================================== */
 
 @media (max-width: 820px) {
   .exploded-canvas-wrap {
-    max-height: 74vh;
-    max-height: 74dvh;
-    top: 45%;
-  }
-
-  /* Show pulsing beacons directly anchored beside each component on mobile */
-  .exploded-callouts-container {
-    display: block;
-  }
-
-  .exploded-callout {
     position: absolute;
-    left: 50% !important;
-    right: auto !important;
-    transform: translate(-50%, 0) !important;
-    opacity: 0;
-    transition: opacity 0.4s ease;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    top: 0;
+    left: 0;
+    transform: none;
   }
 
-  .exploded-callout.active {
-    opacity: 1;
+  .exploded-canvas {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    aspect-ratio: unset;
   }
 
-  .exploded-callout .callout-card,
-  .exploded-callout .callout-leader {
-    display: none; /* Hide large desktop card and leader lines on mobile */
+  /* Completely remove all beacon dots, pulses, and callouts from mobile view */
+  .exploded-callouts-container {
+    display: none !important;
   }
 
-  .exploded-callout .callout-beacon {
-    /* Position the pulsing gold beacon dot right beside the bottle edge */
-    transform: translateX(min(90px, 24vw));
+  .callout-beacon,
+  .beacon-pulse,
+  .beacon-dot {
+    display: none !important;
   }
 
   /* Compact floating mobile focus card docked cleanly above bottom nav */
