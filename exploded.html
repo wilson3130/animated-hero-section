@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>The Architecture of The Gambler — Biography Paris</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body style="margin: 0; background-color: #e5e5e5;">
+
+  <!-- ==========================================================================
+       BIOGRAPHY PARIS — EXPLODED FLACON SCROLLYTELLING SECTION
+       Self-contained embeddable section. Zero external libraries.
+       Controlled by shared style.css and script.js.
+       ========================================================================== -->
+  <section class="biography-exploded-section" id="biographyExplodedSection" aria-label="The Architecture of The Gambler Flacon">
+
+    <!-- Sticky Full-Viewport Stage -->
+    <div class="exploded-sticky-viewport" id="explodedStickyViewport">
+
+      <!-- Central Canvas Stage -->
+      <div class="exploded-canvas-wrap" id="explodedCanvasWrap">
+        <canvas id="explodedCanvas" class="exploded-canvas" aria-label="Interactive 3D exploded view of The Gambler perfume flacon"></canvas>
+      </div>
+
+      <!-- Component Callouts with Beacons & Leader Lines -->
+      <div class="exploded-callouts-container" id="explodedCalloutsContainer">
+
+        <!-- Callout 1: Wooden Cap (Left Side) -->
+        <article class="exploded-callout callout-left callout-cap" id="calloutWoodenCap" data-milestone="0" aria-label="Wooden Cap specification">
+          <div class="callout-card">
+            <div class="callout-meta">
+              <span class="callout-num">01</span>
+              <span class="callout-badge">HIMALAYAN PINE</span>
+            </div>
+            <h3 class="callout-title">WOODEN CAP</h3>
+            <p class="callout-desc">Each Individually hand-crafted from Himalayan pine wood.</p>
+          </div>
+          <svg class="callout-leader" aria-hidden="true" viewBox="0 0 80 24">
+            <line class="leader-path" x1="0" y1="12" x2="72" y2="12" />
+            <circle class="leader-dot" cx="76" cy="12" r="3" />
+          </svg>
+          <div class="callout-beacon" aria-hidden="true">
+            <span class="beacon-pulse"></span>
+            <span class="beacon-dot"></span>
+          </div>
+        </article>
+
+        <!-- Callout 2: Pressurised Atomizer (Right Side) -->
+        <article class="exploded-callout callout-right callout-atomizer" id="calloutAtomizer" data-milestone="1" aria-label="Pressurised Atomizer specification">
+          <div class="callout-beacon" aria-hidden="true">
+            <span class="beacon-pulse"></span>
+            <span class="beacon-dot"></span>
+          </div>
+          <svg class="callout-leader" aria-hidden="true" viewBox="0 0 80 24">
+            <circle class="leader-dot" cx="4" cy="12" r="3" />
+            <line class="leader-path" x1="8" y1="12" x2="80" y2="12" />
+          </svg>
+          <div class="callout-card">
+            <div class="callout-meta">
+              <span class="callout-num">02</span>
+              <span class="callout-badge">AEROSOL ENGINEERING</span>
+            </div>
+            <h3 class="callout-title">PRESSURISED ATOMIZER</h3>
+            <p class="callout-desc">Engineered for a finer, more consistent mist.</p>
+          </div>
+        </article>
+
+        <!-- Callout 3: Longest Lasting Formula (Left Side) -->
+        <article class="exploded-callout callout-left callout-formula" id="calloutFormula" data-milestone="2" aria-label="Longest Lasting Formula specification">
+          <div class="callout-card">
+            <div class="callout-meta">
+              <span class="callout-num">03</span>
+              <span class="callout-badge">33% OIL CONCENTRATION</span>
+            </div>
+            <h3 class="callout-title">LONGEST LASTING FORMULA</h3>
+            <p class="callout-desc">33% Oil Concentration.</p>
+          </div>
+          <svg class="callout-leader" aria-hidden="true" viewBox="0 0 80 24">
+            <line class="leader-path" x1="0" y1="12" x2="72" y2="12" />
+            <circle class="leader-dot" cx="76" cy="12" r="3" />
+          </svg>
+          <div class="callout-beacon" aria-hidden="true">
+            <span class="beacon-pulse"></span>
+            <span class="beacon-dot"></span>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Mobile Active Callout Card (Floating Frosted Badge) -->
+      <div class="exploded-mobile-card" id="explodedMobileCard" aria-live="polite">
+        <div class="mobile-card-meta">
+          <span class="mobile-card-num" id="mobileCardNum">01</span>
+          <span class="mobile-card-badge" id="mobileCardBadge">HIMALAYAN PINE</span>
+        </div>
+        <h3 class="mobile-card-title" id="mobileCardTitle">WOODEN CAP</h3>
+        <p class="mobile-card-desc" id="mobileCardDesc">Each Individually hand-crafted from Himalayan pine wood.</p>
+      </div>
+
+      <!-- Initial Scroll Invitation Prompt -->
+      <div class="exploded-scroll-hint" id="explodedScrollHint" aria-hidden="true">
+        <span class="hint-label">SCROLL TO DISASSEMBLE</span>
+        <svg class="hint-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 5v14M19 12l-7 7-7-7"/>
+        </svg>
+      </div>
+
+      <!-- Interactive Milestone Navigation Dock -->
+      <footer class="exploded-footer-dock">
+        <nav class="exploded-nav-pills" id="explodedNavPills" aria-label="Deconstructed component milestones">
+          <button type="button" class="exploded-nav-btn active" data-progress="0.32" aria-label="Jump to Wooden Cap milestone">
+            <span class="nav-btn-index">01</span>
+            <span class="nav-btn-text">WOODEN CAP</span>
+          </button>
+          <span class="nav-pill-separator" aria-hidden="true"></span>
+          <button type="button" class="exploded-nav-btn" data-progress="0.62" aria-label="Jump to Pressurised Atomizer milestone">
+            <span class="nav-btn-index">02</span>
+            <span class="nav-btn-text">ATOMIZER</span>
+          </button>
+          <span class="nav-pill-separator" aria-hidden="true"></span>
+          <button type="button" class="exploded-nav-btn" data-progress="0.94" aria-label="Jump to Formula milestone">
+            <span class="nav-btn-index">03</span>
+            <span class="nav-btn-text">33% FORMULA</span>
+          </button>
+        </nav>
+      </footer>
+
+      <!-- Sleek Milestone Progress Rail -->
+      <div class="exploded-progress-rail" aria-hidden="true">
+        <div class="exploded-progress-fill" id="explodedProgressFill"></div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- Shared Engine Script -->
+  <script src="script.js"></script>
+</body>
+</html>

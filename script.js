@@ -225,6 +225,7 @@
       this.sliderSection = document.getElementById('biographyHeroSlider');
       this.stage = document.getElementById('carouselStage');
       this.track = document.getElementById('flaconsTrack');
+      if (!this.sliderSection || !this.track) return;
       this.ambientSpotlight = document.getElementById('ambientSpotlight');
 
       // Tactile sound engine (always active)
@@ -640,10 +641,386 @@
     }
   }
 
-  // Initialize on DOM ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => new BiographyInfiniteSlider());
-  } else {
+  /**
+   * BIOGRAPHY PARIS — SCROLL-DRIVEN EXPLODED FLACON ENGINE
+   * Apple-Grade Canvas Scrollytelling with Real-Time Frame Interpolation
+   * Multi-Milestone Component Callouts with Haptics & Gear Detent Ticks
+   * Zero External Libraries — Auto-CDN Resolving
+   */
+  class ExplodedBottleScroller {
+    constructor() {
+      this.section = document.getElementById('biographyExplodedSection');
+      this.stickyViewport = document.getElementById('explodedStickyViewport');
+      this.canvas = document.getElementById('explodedCanvas');
+      if (!this.section || !this.canvas) return;
+
+      this.ctx = this.canvas.getContext('2d');
+      this.totalFrames = 60;
+      this.frames = new Array(this.totalFrames);
+      this.loadedFramesCount = 0;
+      this.isFirstFrameRendered = false;
+
+      // Tactile sound engine
+      this.soundEngine = new TactileSoundEngine();
+
+      // DOM references
+      this.callouts = [
+        document.getElementById('calloutWoodenCap'),
+        document.getElementById('calloutAtomizer'),
+        document.getElementById('calloutFormula')
+      ];
+
+      this.mobileCard = document.getElementById('explodedMobileCard');
+      this.mobileCardNum = document.getElementById('mobileCardNum');
+      this.mobileCardBadge = document.getElementById('mobileCardBadge');
+      this.mobileCardTitle = document.getElementById('mobileCardTitle');
+      this.mobileCardDesc = document.getElementById('mobileCardDesc');
+
+      this.scrollHint = document.getElementById('explodedScrollHint');
+      this.progressFill = document.getElementById('explodedProgressFill');
+      this.navButtons = document.querySelectorAll('.exploded-nav-btn');
+
+      // Milestone specification data
+      this.milestones = [
+        {
+          index: 0,
+          targetProgress: 0.32,
+          range: [0.12, 0.48],
+          num: '01',
+          badge: 'HIMALAYAN PINE',
+          title: 'WOODEN CAP',
+          desc: 'Each Individually hand-crafted from Himalayan pine wood.'
+        },
+        {
+          index: 1,
+          targetProgress: 0.62,
+          range: [0.46, 0.76],
+          num: '02',
+          badge: 'AEROSOL ENGINEERING',
+          title: 'PRESSURISED ATOMIZER',
+          desc: 'Engineered for a finer, more consistent mist.'
+        },
+        {
+          index: 2,
+          targetProgress: 0.94,
+          range: [0.74, 1.00],
+          num: '03',
+          badge: '33% OIL CONCENTRATION',
+          title: 'LONGEST LASTING FORMULA',
+          desc: '33% Oil Concentration.'
+        }
+      ];
+
+      this.activeMilestoneIdx = -1;
+
+      // Interpolation & animation state
+      this.targetProgress = 0;
+      this.currentProgress = 0;
+      this.currentFrameIdx = 0;
+      this.rafId = null;
+      this.isTicking = false;
+
+      this.init();
+    }
+
+    init() {
+      this.resizeCanvas();
+      this.preloadFrames();
+      this.attachEvents();
+      this.calculateScrollProgress();
+    }
+
+    preloadFrames() {
+      // 1. Load initial frame 0 with immediate render priority
+      const firstImg = new Image();
+      firstImg.src = resolveAssetUrl('assets/exploded/frame_000.webp');
+      firstImg.onload = () => {
+        this.frames[0] = firstImg;
+        this.loadedFramesCount++;
+        if (!this.isFirstFrameRendered) {
+          this.drawFrame(0);
+          this.isFirstFrameRendered = true;
+        }
+      };
+
+      // 2. Preload milestone keyframes (peak separation & midpoints)
+      const priorityIndices = [59, 19, 37];
+      priorityIndices.forEach(idx => {
+        const keyImg = new Image();
+        keyImg.src = resolveAssetUrl(`assets/exploded/frame_${String(idx).padStart(3, '0')}.webp`);
+        keyImg.onload = () => {
+          this.frames[idx] = keyImg;
+          this.loadedFramesCount++;
+        };
+      });
+
+      // 3. Preload all remaining frames in background
+      for (let i = 1; i < this.totalFrames; i++) {
+        if (this.frames[i]) continue;
+        const img = new Image();
+        img.src = resolveAssetUrl(`assets/exploded/frame_${String(i).padStart(3, '0')}.webp`);
+        img.onload = () => {
+          this.frames[i] = img;
+          this.loadedFramesCount++;
+        };
+      }
+    }
+
+    resizeCanvas() {
+      const rect = this.canvas.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const newWidth = Math.round(rect.width * dpr);
+      const newHeight = Math.round(rect.height * dpr);
+
+      if (this.canvas.width !== newWidth || this.canvas.height !== newHeight) {
+        this.canvas.width = newWidth;
+        this.canvas.height = newHeight;
+      }
+
+      this.drawFrame(this.currentFrameIdx);
+    }
+
+    drawFrame(frameIdx) {
+      if (!this.ctx || !this.canvas.width || !this.canvas.height) return;
+
+      const img = this.getNearestLoadedFrame(frameIdx);
+      if (!img) return;
+
+      const cw = this.canvas.width;
+      const ch = this.canvas.height;
+      const srcW = img.naturalWidth || 720;
+      const srcH = img.naturalHeight || 1280;
+
+      // Contain fit with centered positioning
+      const scale = Math.min(cw / srcW, ch / srcH);
+      const dw = srcW * scale;
+      const dh = srcH * scale;
+      const dx = (cw - dw) / 2;
+      const dy = (ch - dh) / 2;
+
+      this.ctx.clearRect(0, 0, cw, ch);
+      this.ctx.imageSmoothingEnabled = true;
+      this.ctx.imageSmoothingQuality = 'high';
+      this.ctx.drawImage(img, 0, 0, srcW, srcH, dx, dy, dw, dh);
+    }
+
+    getNearestLoadedFrame(targetIdx) {
+      if (this.frames[targetIdx] && this.frames[targetIdx].complete) {
+        return this.frames[targetIdx];
+      }
+      for (let offset = 1; offset < this.totalFrames; offset++) {
+        const prev = targetIdx - offset;
+        if (prev >= 0 && this.frames[prev] && this.frames[prev].complete) {
+          return this.frames[prev];
+        }
+        const next = targetIdx + offset;
+        if (next < this.totalFrames && this.frames[next] && this.frames[next].complete) {
+          return this.frames[next];
+        }
+      }
+      return null;
+    }
+
+    attachEvents() {
+      // Scroll listener (passive for 60fps compositor smoothness)
+      window.addEventListener('scroll', () => {
+        this.calculateScrollProgress();
+      }, { passive: true });
+
+      // Resize observer & window resize
+      window.addEventListener('resize', () => {
+        this.resizeCanvas();
+        this.calculateScrollProgress();
+      }, { passive: true });
+
+      // Nav dock buttons
+      this.navButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const targetProg = parseFloat(btn.getAttribute('data-progress'));
+          if (isNaN(targetProg)) return;
+          this.soundEngine.unlock();
+          this.soundEngine.playGearTick(1, 1.3, true);
+          this.scrollToProgress(targetProg);
+        });
+      });
+
+      // Mobile swipe gesture support on dynamic card
+      if (this.mobileCard) {
+        let touchStartX = 0;
+        let touchStartY = 0;
+        this.mobileCard.addEventListener('touchstart', (e) => {
+          if (e.touches && e.touches[0]) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+          }
+        }, { passive: true });
+
+        this.mobileCard.addEventListener('touchend', (e) => {
+          if (!e.changedTouches || !e.changedTouches[0]) return;
+          const deltaX = e.changedTouches[0].clientX - touchStartX;
+          const deltaY = e.changedTouches[0].clientY - touchStartY;
+          if (Math.abs(deltaX) > 35 && Math.abs(deltaX) > Math.abs(deltaY) * 1.4) {
+            this.soundEngine.unlock();
+            const currentIdx = Math.max(0, this.activeMilestoneIdx);
+            if (deltaX < 0 && currentIdx < this.milestones.length - 1) {
+              // Swipe left -> Next milestone
+              this.scrollToProgress(this.milestones[currentIdx + 1].targetProgress);
+            } else if (deltaX > 0 && currentIdx > 0) {
+              // Swipe right -> Prev milestone
+              this.scrollToProgress(this.milestones[currentIdx - 1].targetProgress);
+            }
+          }
+        }, { passive: true });
+      }
+    }
+
+    calculateScrollProgress() {
+      const rect = this.section.getBoundingClientRect();
+      const scrollDist = rect.height - window.innerHeight;
+      if (scrollDist <= 0) return;
+
+      const scrolled = -rect.top;
+      const progress = Math.min(Math.max(scrolled / scrollDist, 0), 1);
+      this.targetProgress = progress;
+
+      if (!this.isTicking) {
+        this.isTicking = true;
+        this.rafId = requestAnimationFrame(() => this.tick());
+      }
+    }
+
+    scrollToProgress(prog) {
+      const rect = this.section.getBoundingClientRect();
+      const scrollDist = rect.height - window.innerHeight;
+      const targetY = window.scrollY + rect.top + (prog * scrollDist);
+      window.scrollTo({
+        top: targetY,
+        behavior: 'smooth'
+      });
+    }
+
+    tick() {
+      const diff = this.targetProgress - this.currentProgress;
+
+      // Silk-smooth kinetic interpolation (lerp)
+      if (Math.abs(diff) > 0.0004) {
+        this.currentProgress += diff * 0.14;
+      } else {
+        this.currentProgress = this.targetProgress;
+      }
+
+      const frameIdx = Math.min(
+        this.totalFrames - 1,
+        Math.max(0, Math.round(this.currentProgress * (this.totalFrames - 1)))
+      );
+
+      if (frameIdx !== this.currentFrameIdx || !this.isFirstFrameRendered) {
+        this.currentFrameIdx = frameIdx;
+        this.drawFrame(this.currentFrameIdx);
+      }
+
+      this.updateUI(this.currentProgress);
+
+      if (Math.abs(this.targetProgress - this.currentProgress) > 0.0004) {
+        this.rafId = requestAnimationFrame(() => this.tick());
+      } else {
+        this.isTicking = false;
+      }
+    }
+
+    updateUI(progress) {
+      // 1. Progress Bar Fill
+      if (this.progressFill) {
+        this.progressFill.style.width = `${(progress * 100).toFixed(1)}%`;
+      }
+
+      // 2. Initial Scroll Invitation Hint
+      if (this.scrollHint) {
+        if (progress > 0.06) {
+          this.scrollHint.classList.add('hidden');
+        } else {
+          this.scrollHint.classList.remove('hidden');
+        }
+      }
+
+      // 3. Determine active milestone
+      let activeIdx = -1;
+      if (progress >= 0.74) {
+        activeIdx = 2; // Formula
+      } else if (progress >= 0.46) {
+        activeIdx = 1; // Atomizer
+      } else if (progress >= 0.12) {
+        activeIdx = 0; // Cap
+      }
+
+      // Trigger mechanical tick & haptic feedback on boundary change
+      if (activeIdx !== this.activeMilestoneIdx) {
+        if (activeIdx !== -1 && this.activeMilestoneIdx !== -1) {
+          this.soundEngine.playGearTick(1, 1.25, true);
+          if ('vibrate' in navigator) {
+            try { navigator.vibrate(12); } catch (e) {}
+          }
+        }
+        this.activeMilestoneIdx = activeIdx;
+      }
+
+      // 4. Update Desktop Callouts
+      // If exploded fully (>0.85), illuminate all 3 for complete architectural appreciation
+      const isPeakExplosion = progress >= 0.85;
+
+      this.callouts.forEach((callout, idx) => {
+        if (!callout) return;
+        if (isPeakExplosion) {
+          callout.classList.add('active');
+        } else {
+          callout.classList.toggle('active', idx === activeIdx);
+        }
+      });
+
+      // 5. Update Mobile Dynamic Callout Card
+      if (this.mobileCard) {
+        if (activeIdx >= 0) {
+          const data = this.milestones[activeIdx];
+          if (this.mobileCardTitle && this.mobileCardTitle.textContent !== data.title) {
+            this.mobileCard.style.opacity = '0';
+            this.mobileCard.style.transform = 'translateY(8px)';
+            setTimeout(() => {
+              this.mobileCardNum.textContent = data.num;
+              this.mobileCardBadge.textContent = data.badge;
+              this.mobileCardTitle.textContent = data.title;
+              this.mobileCardDesc.textContent = data.desc;
+              this.mobileCard.style.opacity = '1';
+              this.mobileCard.style.transform = 'translateY(0)';
+            }, 150);
+          } else {
+            this.mobileCard.style.opacity = '1';
+            this.mobileCard.style.transform = 'translateY(0)';
+          }
+        } else {
+          this.mobileCard.style.opacity = '0';
+          this.mobileCard.style.transform = 'translateY(12px)';
+        }
+      }
+
+      // 6. Update Milestone Navigation Pills
+      const highlightedNavIdx = Math.max(0, activeIdx);
+      this.navButtons.forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === highlightedNavIdx);
+      });
+    }
+  }
+
+  // Initialize both components on DOM ready
+  function initBiographyEngines() {
     new BiographyInfiniteSlider();
+    new ExplodedBottleScroller();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBiographyEngines);
+  } else {
+    initBiographyEngines();
   }
 })();
