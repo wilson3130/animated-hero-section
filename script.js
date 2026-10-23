@@ -724,53 +724,85 @@
     }
 
     init() {
+      this.updateDimensions();
       this.resizeCanvas();
       this.preloadFrames();
       this.attachEvents();
       this.calculateScrollProgress();
     }
 
+    updateDimensions() {
+      const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+      const rect = this.section.getBoundingClientRect();
+      this.sectionTop = rect.top + scrollY;
+      this.sectionHeight = rect.height;
+      this.viewportHeight = window.innerHeight;
+      this.scrollDist = Math.max(1, this.sectionHeight - this.viewportHeight);
+      this.isMobile = window.innerWidth <= 820;
+    }
+
     preloadFrames() {
-      // 1. Load initial frame 0 with immediate render priority
-      const firstImg = new Image();
-      firstImg.src = resolveAssetUrl('assets/exploded/frame_000.webp');
-      firstImg.onload = () => {
-        this.frames[0] = firstImg;
-        this.loadedFramesCount++;
-        if (!this.isFirstFrameRendered) {
-          this.drawFrame(0);
-          this.isFirstFrameRendered = true;
+      const loadFrame = (idx) => {
+        if (this.frames[idx]) return;
+        const img = new Image();
+        img.src = resolveAssetUrl(`assets/exploded/frame_${String(idx).padStart(3, '0')}.webp`);
+
+        const onDecoded = () => {
+          this.frames[idx] = img;
+          this.loadedFramesCount++;
+          if (idx === 0 && !this.isFirstFrameRendered) {
+            this.drawFrame(0);
+            this.isFirstFrameRendered = true;
+          }
+        };
+
+        // Asynchronous off-main-thread image decoding to completely eliminate scroll hitching
+        if ('decode' in img) {
+          img.decode().then(onDecoded).catch(onDecoded);
+        } else {
+          img.onload = onDecoded;
         }
       };
 
-      // 2. Preload milestone keyframes (peak separation & midpoints)
-      const priorityIndices = [59, 19, 37];
-      priorityIndices.forEach(idx => {
-        const keyImg = new Image();
-        keyImg.src = resolveAssetUrl(`assets/exploded/frame_${String(idx).padStart(3, '0')}.webp`);
-        keyImg.onload = () => {
-          this.frames[idx] = keyImg;
-          this.loadedFramesCount++;
-        };
-      });
+      // 1. Immediate priority for Frame 0
+      loadFrame(0);
 
-      // 3. Preload all remaining frames in background
-      for (let i = 1; i < this.totalFrames; i++) {
-        if (this.frames[i]) continue;
-        const img = new Image();
-        img.src = resolveAssetUrl(`assets/exploded/frame_${String(i).padStart(3, '0')}.webp`);
-        img.onload = () => {
-          this.frames[i] = img;
-          this.loadedFramesCount++;
-        };
-      }
+      // 2. Pre-decode key milestone frames
+      [59, 19, 37].forEach(idx => loadFrame(idx));
+
+      // 3. Batched background loading via requestIdleCallback to keep CPU 100% free for smooth scrolling
+      let nextIdx = 1;
+      const loadBatch = () => {
+        const batchSize = this.isMobile ? 5 : 10;
+        let count = 0;
+        while (nextIdx < this.totalFrames && count < batchSize) {
+          if (!this.frames[nextIdx]) {
+            loadFrame(nextIdx);
+            count++;
+          }
+          nextIdx++;
+        }
+        if (nextIdx < this.totalFrames) {
+          if ('requestIdleCallback' in window) {
+            requestIdleCallback(loadBatch, { timeout: 150 });
+          } else {
+            setTimeout(loadBatch, 35);
+          }
+        }
+      };
+      loadBatch();
     }
 
     resizeCanvas() {
+      this.updateDimensions();
       const rect = this.canvas.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // On mobile, cap DPR to 1.5 to eliminate GPU rasterization bottlenecks
+      const dpr = this.isMobile
+        ? Math.min(window.devicePixelRatio || 1, 1.5)
+        : Math.min(window.devicePixelRatio || 1, 2);
+
       const newWidth = Math.round(rect.width * dpr);
       const newHeight = Math.round(rect.height * dpr);
 
@@ -805,6 +837,7 @@
       const dx = (cw - dw) / 2;
       const dy = (ch - dh) / 2;
 
+      // Only draw background gradient on widescreen desktop where side gaps exist
       if (dx > 0 || dy > 0) {
         const bgGrad = this.ctx.createLinearGradient(0, 0, 0, ch);
         bgGrad.addColorStop(0, '#e9ebe8');
@@ -814,12 +847,11 @@
         bgGrad.addColorStop(1, '#dfdfdf');
         this.ctx.fillStyle = bgGrad;
         this.ctx.fillRect(0, 0, cw, ch);
-      } else {
-        this.ctx.clearRect(0, 0, cw, ch);
       }
+      // On mobile, image covers entire canvas buffer so direct drawImage is zero-overhead
 
       this.ctx.imageSmoothingEnabled = true;
-      this.ctx.imageSmoothingQuality = 'high';
+      this.ctx.imageSmoothingQuality = this.isMobile ? 'medium' : 'high';
       this.ctx.drawImage(img, 0, 0, srcW, srcH, dx, dy, dw, dh);
     }
 
@@ -841,12 +873,12 @@
     }
 
     attachEvents() {
-      // Scroll listener (passive for 60fps compositor smoothness)
+      // Scroll listener (zero forced reflow, passive for 60/120fps compositor smoothness)
       window.addEventListener('scroll', () => {
         this.calculateScrollProgress();
       }, { passive: true });
 
-      // Resize observer & window resize
+      // Resize listener
       window.addEventListener('resize', () => {
         this.resizeCanvas();
         this.calculateScrollProgress();
@@ -894,12 +926,10 @@
     }
 
     calculateScrollProgress() {
-      const rect = this.section.getBoundingClientRect();
-      const scrollDist = rect.height - window.innerHeight;
-      if (scrollDist <= 0) return;
-
-      const scrolled = -rect.top;
-      const progress = Math.min(Math.max(scrolled / scrollDist, 0), 1);
+      // High-performance scroll tracking: zero layout reflows on main thread
+      const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+      const scrolled = scrollY - this.sectionTop;
+      const progress = Math.min(Math.max(scrolled / this.scrollDist, 0), 1);
       this.targetProgress = progress;
 
       if (!this.isTicking) {
@@ -909,9 +939,7 @@
     }
 
     scrollToProgress(prog) {
-      const rect = this.section.getBoundingClientRect();
-      const scrollDist = rect.height - window.innerHeight;
-      const targetY = window.scrollY + rect.top + (prog * scrollDist);
+      const targetY = this.sectionTop + (prog * this.scrollDist);
       window.scrollTo({
         top: targetY,
         behavior: 'smooth'
@@ -921,9 +949,11 @@
     tick() {
       const diff = this.targetProgress - this.currentProgress;
 
-      // Silk-smooth kinetic interpolation (lerp)
+      // Responsive kinetic lerp: Snappy 0.34 tracking on mobile so bottle locks to thumb without lag; smooth 0.16 on desktop
+      const lerpRate = this.isMobile ? 0.34 : 0.16;
+
       if (Math.abs(diff) > 0.0004) {
-        this.currentProgress += diff * 0.14;
+        this.currentProgress += diff * lerpRate;
       } else {
         this.currentProgress = this.targetProgress;
       }
@@ -948,17 +978,23 @@
     }
 
     updateUI(progress) {
-      // 1. Progress Bar Fill
+      // 1. Progress Bar Fill via hardware-accelerated transform: scaleX (zero layout reflow)
       if (this.progressFill) {
-        this.progressFill.style.width = `${(progress * 100).toFixed(1)}%`;
+        this.progressFill.style.transform = `scaleX(${progress})`;
       }
 
       // 2. Initial Scroll Invitation Hint
       if (this.scrollHint) {
         if (progress > 0.06) {
-          this.scrollHint.classList.add('hidden');
+          if (!this.scrollHintHidden) {
+            this.scrollHint.classList.add('hidden');
+            this.scrollHintHidden = true;
+          }
         } else {
-          this.scrollHint.classList.remove('hidden');
+          if (this.scrollHintHidden) {
+            this.scrollHint.classList.remove('hidden');
+            this.scrollHintHidden = false;
+          }
         }
       }
 
@@ -977,27 +1013,27 @@
         if (activeIdx !== -1 && this.activeMilestoneIdx !== -1) {
           this.soundEngine.playGearTick(1, 1.25, true);
           if ('vibrate' in navigator) {
-            try { navigator.vibrate(12); } catch (e) {}
+            try { navigator.vibrate(10); } catch (e) {}
           }
         }
         this.activeMilestoneIdx = activeIdx;
       }
 
-      // 4. Update Desktop Callouts
-      // If exploded fully (>0.85), illuminate all 3 for complete architectural appreciation
-      const isPeakExplosion = progress >= 0.85;
-
-      this.callouts.forEach((callout, idx) => {
-        if (!callout) return;
-        if (isPeakExplosion) {
-          callout.classList.add('active');
-        } else {
-          callout.classList.toggle('active', idx === activeIdx);
-        }
-      });
+      // 4. Update Desktop Callouts (only on desktop to eliminate mobile DOM overhead)
+      if (!this.isMobile) {
+        const isPeakExplosion = progress >= 0.85;
+        this.callouts.forEach((callout, idx) => {
+          if (!callout) return;
+          if (isPeakExplosion) {
+            callout.classList.add('active');
+          } else {
+            callout.classList.toggle('active', idx === activeIdx);
+          }
+        });
+      }
 
       // 5. Update Mobile Dynamic Callout Card
-      if (this.mobileCard) {
+      if (this.isMobile && this.mobileCard) {
         if (activeIdx >= 0) {
           const data = this.milestones[activeIdx];
           if (this.mobileCardTitle && this.mobileCardTitle.textContent !== data.title) {
@@ -1010,22 +1046,27 @@
               this.mobileCardDesc.textContent = data.desc;
               this.mobileCard.style.opacity = '1';
               this.mobileCard.style.transform = 'translateY(0)';
-            }, 150);
-          } else {
+            }, 120);
+          } else if (this.mobileCard.style.opacity !== '1') {
             this.mobileCard.style.opacity = '1';
             this.mobileCard.style.transform = 'translateY(0)';
           }
         } else {
-          this.mobileCard.style.opacity = '0';
-          this.mobileCard.style.transform = 'translateY(12px)';
+          if (this.mobileCard.style.opacity !== '0') {
+            this.mobileCard.style.opacity = '0';
+            this.mobileCard.style.transform = 'translateY(12px)';
+          }
         }
       }
 
       // 6. Update Milestone Navigation Pills
       const highlightedNavIdx = Math.max(0, activeIdx);
-      this.navButtons.forEach((btn, idx) => {
-        btn.classList.toggle('active', idx === highlightedNavIdx);
-      });
+      if (highlightedNavIdx !== this.lastHighlightedNavIdx) {
+        this.lastHighlightedNavIdx = highlightedNavIdx;
+        this.navButtons.forEach((btn, idx) => {
+          btn.classList.toggle('active', idx === highlightedNavIdx);
+        });
+      }
     }
   }
 
